@@ -15,7 +15,7 @@ fi
 
 stoppingContainers () {
 	echo "Stopping containers"
-	docker-compose --log-level ERROR -p fiware down -v --remove-orphans
+	docker-compose --log-level ERROR -f docker-compose/$1.yml -p fiware down -v --remove-orphans
 }
 
 displayServices () {
@@ -29,16 +29,25 @@ case "${command}" in
 	"help")
 		echo "usage: services [create|start|stop]"
 		;;
-	"start")
-		stoppingContainers
+	"orion")
+		stoppingContainers orion
 		echo -e "Starting two containers \033[1;34mOrion\033[0m and a \033[1;30mMongoDB\033[0m database."
 		echo -e "- \033[1;34mOrion\033[0m is the context broker"
 		echo ""
-		docker-compose --log-level ERROR -p fiware up -d --remove-orphans
+		docker-compose --log-level ERROR -f docker-compose/orion.yml -p fiware up -d --remove-orphans
+		displayServices
+		;;
+	"scorpio")
+		stoppingContainers scorpio
+		echo -e "Starting four containers \033[1;34mScorpio\033[0m, \033[1;30mKafka\033[0m, \033[1;30mZookeeper\033[0m and a \033[1;30mPostgres\033[0m database."
+		echo -e "- \033[1;34mOrion\033[0m is the context broker"
+		echo ""
+		docker-compose --log-level ERROR -f docker-compose/scorpio.yml -p fiware up -d --remove-orphans
 		displayServices
 		;;
 	"stop")
-		stoppingContainers
+		stoppingContainers scorpio
+		stoppingContainers orion
 		;;
 	"create")
 		echo "Obtaining Mongo DB image"
@@ -48,7 +57,7 @@ case "${command}" in
 		;;
 	*)
 		echo "Command not Found."
-		echo "usage: services [create|start|stop]"
+		echo "usage: services [create|orion|scorpio|stop]"
 		exit 127;
 		;;
 esac
