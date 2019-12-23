@@ -50,3 +50,5 @@ services:
     depends_on:
       - kafka
       - postgres-db
+    healthcheck:
+      test: curl --fail -s http://scorpio:9090/v1/info/ || exit 1
