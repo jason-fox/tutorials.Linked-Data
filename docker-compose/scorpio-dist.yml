@@ -44,11 +44,11 @@ services:
     hostname: scorpio
     container_name: scorpio-gateway
     ports:
-      - "9090:9090"
+      - "${SCORPIO_PORT}:${SCORPIO_PORT}"
     depends_on:
       - eureka
     healthcheck:
-      test: curl --fail -s http://scorpio:9090/v1/info/ || exit 1
+      test: curl --fail -s http://scorpio:${SCORPIO_PORT}/scorpio/v1/info/ || exit 1
 
   atctxsrv:
     image: scorpiobroker/scorpio:AtContextServer

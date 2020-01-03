@@ -41,14 +41,14 @@ services:
 
   scorpio:
     hostname: scorpio
-    image: scorpiobroker/scorpio:scorpio-aaio
+    image: scorpiobroker/scorpio:scorpio-aaio_${SCORPIO_VERSION}
     container_name: fiware-scorpio
     networks:
       - default
     ports:
-      - "9090:9090"
+      - "${SCORPIO_PORT}:9090"
     depends_on:
       - kafka
       - postgres-db
     healthcheck:
-      test: curl --fail -s http://scorpio:9090/v1/info/ || exit 1
+      test: curl --fail -s http://scorpio:${SCORPIO_PORT}/scorpio/v1/info/ || exit 1
