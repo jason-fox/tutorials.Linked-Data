@@ -19,8 +19,9 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_PORT: 9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
@@ -43,8 +44,12 @@ services:
     image: scorpiobroker/scorpio:gateway
     hostname: scorpio
     container_name: scorpio-gateway
+    networks:
+      - default
     ports:
       - "${SCORPIO_PORT}:${SCORPIO_PORT}"
+    links:
+      - "postgres-db:postgres"
     depends_on:
       - eureka
     healthcheck:
@@ -53,6 +58,8 @@ services:
   atctxsrv:
     image: scorpiobroker/scorpio:AtContextServer
     container_name: scorpio-atctxsrv
+    networks:
+      - default
     ports:
       - "27015"
     depends_on:
@@ -61,6 +68,8 @@ services:
   cfgsrv:
     image: scorpiobroker/scorpio:config-server
     container_name: scorpio-cfgsrv
+    networks:
+      - default
     ports:
       - "8888"
     depends_on:
@@ -68,6 +77,8 @@ services:
   emgr:
     image: scorpiobroker/scorpio:EntityManager
     container_name: scorpio-emgr
+    networks:
+      - default
     ports:
       - "1025"
     depends_on:
@@ -76,11 +87,15 @@ services:
   eureka:
     image: scorpiobroker/scorpio:eureka-server
     container_name: scorpio-eureka
+    networks:
+      - default
     ports:
       - "8761"
   histmgr:
     image: scorpiobroker/scorpio:HistoryManager
     container_name: scorpio-histmgr
+    networks:
+      - default
     ports:
       - "1040"
     depends_on:
@@ -90,6 +105,8 @@ services:
   qrymgr:
     image: scorpiobroker/scorpio:QueryManager
     container_name: scorpio-qrymgr
+    networks:
+      - default
     ports:
       - "1026"
     depends_on:
@@ -99,6 +116,8 @@ services:
   regmgr:
     image: scorpiobroker/scorpio:RegistryManager
     container_name: scorpio-regmgr
+    networks:
+      - default
     ports:
       - "1030"
     depends_on:
@@ -109,6 +128,8 @@ services:
   stomgr:
     image: scorpiobroker/scorpio:StorageManager
     container_name: scorpio-stomgr
+    networks:
+      - default
     ports:
       - "1029"
     depends_on:
@@ -118,6 +139,8 @@ services:
   sbsmgr:
     image: scorpiobroker/scorpio:SubscriptionManager
     container_name: scorpio-sbsmgr
+    networks:
+      - default
     ports:
       - "2025"
     depends_on:
