@@ -25,7 +25,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zookeeper
-  postgres-db:
+      
+  postgres:
     image: mdillon/postgis
     hostname: postgres
     container_name: db-postgres
@@ -44,13 +45,11 @@ services:
     container_name: fiware-scorpio
     networks:
       - default
-    links:
-      - "postgres-db:postgres"
     ports:
       - "${SCORPIO_PORT}:9090"
     depends_on:
       - kafka
-      - postgres-db
+      - postgres
     healthcheck:
       test: curl --fail -s http://scorpio:${SCORPIO_PORT}/scorpio/v1/info/ || exit 1
 
